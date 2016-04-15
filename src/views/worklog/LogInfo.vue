@@ -1,13 +1,14 @@
 <template>
 	<div class="page logInfo">
 		<nav-bar :text="curDay">
-			<span class="icon-chevron-left" slot="leftBar" @click="back()"></span>
-			<span class="icon-plus" slot="rightBar" @click="addTask"></span>
+			<span class="icon-chevron-left" slot="leftBar" @click="back"></span>
+			<!-- <span class="icon-add" slot="rightBar" @click="addTask"></span> -->
+			<a class="icon-plus"   slot="rightBar" @click="addTask"></a>
 		</nav-bar>	
 		<page-body>
-			<cells>
-				<link-cell v-for="item in logInfo">
-					<div slot="body">
+			<group>
+				<cell v-for="item in logInfo" >
+					<div slot="after-title">
 						<table class="log">
 							<tbody>
 								<tr>
@@ -35,21 +36,20 @@
 							</tbody>
 						</table>
 					</div>
-				</link-cell>
-			</cells>
+				</cell>
+			</group>
+			
 		</page-body>
-		<Toast type="loading" v-show="isloading">
+		<loading :show.sync="isloading">
 			加载中..
-		</Toast>
+		</loading>
 	</div>
 </template>
 
 
 <script lang="babel">
-	
-	import NavBar from '../../components/NavBar.vue'
-	import PageBody from '../../components/PageBody.vue'
-	import {Toast,Cells,LinkCell} from 'vue-weui'
+	import {NavBar,PageBody} from '../../components/'
+	import {Loading,Group,Cell} from 'vux'
 
 	export default {
 		name:'loginfo',
@@ -86,16 +86,17 @@
 		components:{
 			NavBar,
 			PageBody,
-			Cells,
-			LinkCell,
-			Toast
+			Loading,
+			Cell,
+			Group
 		},
 		methods:{
 			back(){
 				history.back();
 			},
 			addTask(){
-				this.$route.router.go({name:'logdetail',params:{date:this.curDay,type:'add'}});
+				console.log("新增")
+				this.$route.router.go({name:'logdetail',params:{date:this.curDay},query:{type:'add'}});
 			}
 		}
 	}

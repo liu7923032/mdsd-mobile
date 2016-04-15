@@ -95,7 +95,7 @@ const DateHelper={
 	    var day = currentDay.getDate();
 	    var endDay = day + (7 - currentDay.getDay());
 	    if (endDay > days) {     //如果跨月的情况
-	        var newDay = (endDay - days) + 1;
+	        var newDay = (endDay - days);
 	        if (newDay < 10) {
 	            newDay = "0" + newDay;
 	        }

@@ -18,6 +18,8 @@ import App from './App.vue'
 
 import filters from './filters/filters';
 
+
+
     // 1:创建启动的版本
 
 Vue.use(Router)
@@ -30,24 +32,24 @@ Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
 // Vue.http.options.root = 'http://ht.mdsd.cn:9000/api';
 Vue.http.options.root = 'http://localhost:9001/api';
 // 发送请求的拦截器
-Vue.http.interceptors.push(function () {
-    return {
-        request: function (request) {
-            //检查是否包含userId,
-            if(!request.params.userId){
-                console.log("当前的登陆人是:"+request.params.type);
-                request.params["userId"]=auth.getUser().userId;
-            }
-            console.log("request:"+request.params);
-            return request;
-        },
+// Vue.http.interceptors.push(function () {
+//     return {
+//         request: function (request) {
+//             //检查是否包含userId,
+//             if(!request.params.userId){
+//                 console.log("当前的登陆人是:"+request.params.type);
+//                 request.params["userId"]=auth.getUser().userId;
+//             }
+//             console.log("request:"+request.params);
+//             return request;
+//         },
 
-        response: function (response) {
-            return response;
-        }
+//         response: function (response) {
+//             return response;
+//         }
 
-    };
-});
+//     };
+// });
 // 创建一个路由器实例
 // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
 

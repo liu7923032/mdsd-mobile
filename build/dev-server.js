@@ -55,9 +55,11 @@ app.use(devMiddleware)
 app.use(hotMiddleware)
 
 // serve pure static assets
-app.use('/static', express.static('./static'))
+app.use('/static', express.static('./src/assets'));
 
-module.exports = app.listen(8080, function (err) {
+
+
+app.listen(8080, '192.168.1.39', function (err) {
   if (err) {
     console.log(err)
     return

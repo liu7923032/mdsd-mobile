@@ -27,16 +27,14 @@ export default function(router) {
         '/worklog': {
             name: 'worklog',
             auth: true,
-            component: require('./views/WorkLog.vue'),
-            subRoutes: {
-            }
+            component: require('./views/WorkLog.vue')
         },
         '/loginfo/:date':{
             name:'loginfo',
             auth: true,
             component: LogInfo
         },
-        '/logdetail/:date/:type':{
+        '/logdetail/:date':{
             name:'logdetail',
             auth: true,
             component: LogDetail

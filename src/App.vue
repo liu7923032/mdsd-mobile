@@ -24,6 +24,9 @@
 </script>
 
 <style type="text/css">
+
+@import '~vux/vux.css';
+
 	
 /*当你设置一个元素为 box-sizing: border-box; 时，此元素的内边距和边框不再会增加它的宽度*/
 * {

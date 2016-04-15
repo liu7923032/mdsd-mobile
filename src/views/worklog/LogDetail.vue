@@ -3,47 +3,30 @@
 		<nav-bar :text="curDay">
 			<span class="icon-chevron-left" slot="leftBar" @click="back()">返回</span>
 		</nav-bar>	
-		<page-body >
-			<cells type="form">
-				<input-cell type="text" name="SubTitle" placeholder="输入标题" label="日志标题" :value.sync="title" :warn="ckTitle">
-				</input-cell>
-				<input-cell type="time" name="StartTime" :value="sTime"  label="开始时间" placeholder="开始时间" >
-				</input-cell>
-				<input-cell type="time" name="EndTime" :value="eTime" label="结束时间" placeholder="结束时间" >
-				</input-cell>
-				<select-cell
-				  :after="true"
-				  :options="['中国', '美国', '英国']"
-				  :selected.sync="wType">
-				  <span slot="header">工作类型</span>
-				</select-cell>
-				<link-cell :router-link="{ name: 'project', params: { linkType:'select' }}">
-					<div slot="header">选择项目</div>
-					<div slot="body">
-						<label for="">{{projectName}}</label>
-					</div>
-					<span slot="footer">
-					</span>
-				</link-cell>
-				<select-cell
-				  :after="true"
-				   :options="['项目工作', '研发工作', '合同处理']"
-				  :selected.sync="subType">
-				  <span slot="header">工作类型</span>
-				</select-cell>
-				<input-cell type="textarea" :value.sync="memo" :warn="ckMemo" :rows="textRows" placeholder="日志类容" slot="body"></input-cell>
-			</cells>
-			<button-area>
-				<button @click="saveLog">
-					提交
-				</button>
-			</button-area>
-			<cells type="form">
-				
-			</cells>		
+		<page-body>
+			<group title="时间">
+				<datetime :value.sync="sTime" format="YYYY-MM-DD HH:II"  title="开始时间" confirm-text="完成" cancel-text="取消"></datetime>
+				<datetime :value.sync="eTime" format="YYYY-MM-DD HH:II"  title="结束时间" confirm-text="完成" cancel-text="取消"></datetime>
+			</group>
+			<group title="分类">
+				<x-input title="日志标题" :min=3 :max=20 :value.sync="title" is-type="china_name" placeholder="日志标题:长度3~20"></x-input>
+				<popup-picker title="工作类型" :columns="1" :data="typeOptions" :value.sync="wType" show-name>
+				</popup-picker>
+				<popup-picker title="项目" :columns="2" :data="projectList" :value.sync="project" show-name>
+				</popup-picker>
+				<popup-picker title="工作分类" :data="subTypeData" :value.sync="subType" >
+				</popup-picker>
+				 <textarea :max=200 placeholder="请填写日志内容" ></textarea>
+			</group>
+			
+			<box gap="10px 10px">
+						<x-button @click="saveLog" type="primary">
+						提交
+					</x-button>
+			</box>
 		</page-body>
 
-		<toast type="loading" v-show="isloading">
+		<toast :show.sync="isloading" >
 			保存中。。
 		</toast>
 	</div>
@@ -52,57 +35,40 @@
 
 <script lang="babel">
 	
-	import NavBar from '../../components/NavBar.vue'
-	import PageBody from '../../components/PageBody.vue'
-	import {Toast,Cells,CellHeader,CellBody,InputCell,SelectCell,Cell,LinkCell,ButtonArea,Button,Icon} from 'vue-weui'
-
+	import {NavBar,PageBody} from '../../components/'
+  import { PopupPicker, Group, Picker,GroupTitle,Input as XInput,Datetime,Textarea,Toast,XButton,Flexbox,FlexboxItem,Box } from 'vux'
 	export default {
 		name:'logdetail',
 		data(){
 			return {
 				curDay:'',
 				type:'',
-				typeOptions:[{id:'XMGZLB',text:"项目工作类别"},
-						  {id:'RCGZLB',text:"日常工作类别"},
-						  {id:'SHGZLB',text:"售后工作类别"}],
-				textRows:5,
-				wType:'XMGZLB',
-				subType:'',
+				typeOptions:[{value:'XMGZLB',name:"项目工作"},
+						  {value:'RCGZLB',name:"日常工作"},
+						  {value:'SHGZLB',name:"售后工作"}],
+				projectList:[{value:'main',name:'我主导',parent:0},{value:'part',name:'我参与',parent:0},{value:'11',name:'山东',parent:'main'}
+										,{value:'11',name:'上海麻醉临床信息系统V5.0',parent:'part'}],
+				wType:[],
 				title:'',
 				memo:'',
-				subTypeData:[],
+				subTypeData:[['小米', 'iPhone', '华为', '情怀', '三星', '其他', '不告诉你']],
+				subType:[],
+				project:[],
 				projectCode:'',
 				projectName:'',
 				isloading:false,
-				sTime:'08:50',
-				eTime:'17:00'
+				sTime:'',
+				eTime:''
 			}
 		},
 		route:{
 			//加载数
 			data(transition){
-				console.log(transition);
+				
 				//加载数据
 			  this.curDay=transition.to.params.date;
-			  this.type=transition.to.params.type=="add"||'edit';
-			  console.log("组件初始化");
-			},
-			activate(){
-			  console.log("组件激活")
-			},
-			deactivate(){
-				console.log("组件被移动出来")
-			},
-			canActivate(transition){
-				if(transition.to.query){
-					// this.projectCode=transition.to.query.projectCode||'';
-				}
-			},
-			canDeactivate(){
-				console.log("组件被切出")
-			},
-			canReuse(){
-				return true;
+			  this.type=transition.to.query.type=="add"||'edit';
+			 
 			}
 		},
 		computed:{
@@ -117,18 +83,28 @@
 			NavBar,
 			PageBody,
 			Toast,
-			Cells,
-			CellHeader,
-			CellBody,
-			Cell,
-			InputCell,
-			SelectCell,
-			Button,
-			LinkCell,
-			Icon,
-			ButtonArea
+			PopupPicker,
+			Picker,
+			Group,
+			GroupTitle,
+			XInput,
+			Datetime,
+			Textarea,
+			XButton,
+			Flexbox,FlexboxItem,
+			Box
 		},
 		methods:{
+			clearForm(){
+					this.sTime='';
+			  	this.eTime='';
+			  	this.memo='';
+			  	this.wType=[];
+			  	this.subType=[];
+			},
+			loadForm(){
+
+			},
 			back(){
 				history.back();
 			},

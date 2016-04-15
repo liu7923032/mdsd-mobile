@@ -5,9 +5,9 @@
 			<span slot="rightBtn"></span>
 		</nav-bar>
 		<page-body>
-			<cells-title>
+			<group-title>
 				<div>开始:{{startDay}} 结束:{{endDay}}</div>
-			</cells-title>
+			</group-title>
 			<cells type="access">
 				<link-cell v-for="item in dateRange" :router-link="{ name: 'loginfo', params: { date: item }}">
 					<div slot="header" :class="{'week':($index==5 ||$index==6)}">{{ getZNWeek($index) }}</div>
@@ -24,8 +24,8 @@
 </template>
 
 <script>
-	import {NavBar,PageBody} from '../components/';
-	import {Cells,Cell,CellsTitle,LinkCell} from 'vue-weui'
+	import {NavBar,PageBody,Cells,LinkCell} from '../components/';
+	import {GroupTitle} from 'vux'
 	import DateHelper from '../assets/js/DateHelper.js'
 
 	export default {
@@ -64,16 +64,16 @@
 				if(firstDay+7>days){
 					//跨月加载数据
 					//得到上个月的天数
-					var preMonthDay=DateHelper.dayNumOfMonth(year,month-1);
+					var preMonthDay=DateHelper.dayNumOfMonth(year,month);
 					for (var i = firstDay; i <=preMonthDay; i++) {
-						var tempDate=new Date(year+"/"+(month-1)+"/"+i);
+						var tempDate=new Date(year+"/"+(month)+"/"+i);
 						tempRange.push(
 							DateHelper.formate(tempDate,"yyyy-MM-dd")
 						);
 					}
 					var lastDay=parseInt(this.endDay.split('-')[2]);
 					for (var i = 1; i <=lastDay; i++) {
-						var tempDate=new Date(year+"/"+month+"/"+i);
+						var tempDate=new Date(year+"/"+(month+1)+"/"+i);
 						tempRange.push(
 							DateHelper.formate(tempDate,"yyyy-MM-dd")
 						);
@@ -97,10 +97,9 @@
 		components:{
 			NavBar,
 			PageBody,
-			Cells,
-			Cell,
-			CellsTitle,
-			LinkCell
+			LinkCell,
+			GroupTitle,
+			Cells
 		}
 	}
 </script>
