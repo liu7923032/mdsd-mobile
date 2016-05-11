@@ -8,13 +8,11 @@
 				<datetime :value.sync="sTime" format="YYYY-MM-DD HH:II"  title="开始时间" confirm-text="完成" cancel-text="取消"></datetime>
 				<datetime :value.sync="eTime" format="YYYY-MM-DD HH:II"  title="结束时间" confirm-text="完成" cancel-text="取消"></datetime>
 			</group>
-			<group title="分类">
+			<group title="内容信息">
 				<x-input title="日志标题" :min=3 :max=20 :value.sync="title" is-type="china_name" placeholder="日志标题:长度3~20"></x-input>
 				<popup-picker title="工作类型" :columns="1" :data="typeOptions" :value.sync="wType" show-name>
 				</popup-picker>
 				<popup-picker title="项目" :columns="2" :data="projectList" :value.sync="project" show-name>
-				</popup-picker>
-				<popup-picker title="工作分类" :data="subTypeData" :value.sync="subType" >
 				</popup-picker>
 				 <textarea :max=200 placeholder="请填写日志内容" ></textarea>
 			</group>

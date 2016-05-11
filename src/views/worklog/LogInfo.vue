@@ -1,10 +1,14 @@
 <template>
 	<div class="page logInfo">
-		<nav-bar :text="curDay">
+	<x-header >
+		<p>{{curDay}}</p>
+		<a class="icon-plus"   slot="right" @click="addTask"></a>
+	</x-header>
+	<!-- 	<nav-bar :text="curDay">
 			<span class="icon-chevron-left" slot="leftBar" @click="back"></span>
-			<!-- <span class="icon-add" slot="rightBar" @click="addTask"></span> -->
+			<span class="icon-add" slot="rightBar" @click="addTask"></span>
 			<a class="icon-plus"   slot="rightBar" @click="addTask"></a>
-		</nav-bar>	
+		</nav-bar>	 -->
 		<page-body>
 			<group>
 				<cell v-for="item in logInfo" >
@@ -48,8 +52,9 @@
 
 
 <script lang="babel">
-	import {NavBar,PageBody} from '../../components/'
-	import {Loading,Group,Cell} from 'vux'
+	import {PageBody} from '../../components/'
+	import {Loading,Group,Cell,XHeader} from 'vux'
+	import auth from '../utils/auth'
 
 	export default {
 		name:'loginfo',
@@ -58,10 +63,12 @@
 				curDay:'',
 				logInfo: [],
 				userId:0,
-				isloading:false
+				isloading:false,
+				rightBtn:{
+					showMore:true
+				}
 			}
 		},
-
 		route:{
 			//加载数
 			data(transition){
@@ -79,16 +86,18 @@
 			  	this.logInfo=response.data;
 			  	console.log(this.logInfo)
 			  },(error)=>{
+			  	//如果认证失败,status=401 那么跳转到登陆页
+			  	console.log(error.status);
 			  	this.isloading=false;
 			  });
 			}
 		},
 		components:{
-			NavBar,
 			PageBody,
 			Loading,
 			Cell,
-			Group
+			Group,
+			XHeader
 		},
 		methods:{
 			back(){

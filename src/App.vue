@@ -14,11 +14,23 @@
     import auth from './views/utils/auth.js'
     export default {
       data () {
-        userId: 0
+        return {
+           ticket:''
+        }
       },
       created () {
-        this.userId = auth.getUser().userId||0;
-        console.log("App.vue当前的登陆人是:"+this.userId);
+        //检查是否登陆
+        if(auth.isLogin()){
+          this.ticket=auth.getTicket();
+          this.$http.headers.common['Authorization'] = this.ticket;
+        }
+      },
+      route:{
+        data(transition){
+            if(!auth.isLogin()){
+               transition.redirect('/login');
+            }
+        }
       }
     }
 </script>

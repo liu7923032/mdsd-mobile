@@ -45,8 +45,9 @@
 
 <script lang="babel">
 	
-	import NavBar from '../components/NavBar.vue'
-	import PageBody from '../components/PageBody.vue'
+
+	import { NavBar,PageBody} from '../components/'
+
 	import {Cells,Cell,CellsTitle} from 'vue-weui'
 	
 	export default {

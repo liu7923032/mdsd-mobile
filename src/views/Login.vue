@@ -110,9 +110,9 @@
 				this.$http.get("auth",{"account":this.account,"passwd":this.pwd,"device":this.device}).then((response)=>{
 					this.isloading=false;
 					var data=response.data;
-					console.log(data);
 					if(data.Statu=="Y"){
-						auth.setUser(this.account,this.password,this.isremeber,data.Data);
+						//保存用户信息到数据库中
+						auth.setUser(this.account,data.Data,this.isremeber);
 						//跳转到首页
 						// console.log("我的测试:"+this.$route);
 						if(this.redirectUrl&&this.redirectUrl.length>0){
