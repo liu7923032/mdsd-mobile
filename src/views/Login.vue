@@ -41,8 +41,8 @@
 	export default {
 		data(){
 			return {
-				account:'M0679',
-				pwd:'000',
+				account:'',
+				pwd:'',
 				isremeber:true,
 				isPrompt:false,
 				isloading:false,

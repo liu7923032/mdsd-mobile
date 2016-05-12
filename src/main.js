@@ -37,14 +37,16 @@ Vue.http.interceptors.push(function () {
     return {
         request: function (request) {
             console.log(request);
-            // request.seheaderstRequestHeader('Authorization', 'BasicAuth ' + auth.getTicket());
-            //检查是否包含userId,
             //在每次请求之前都加上人员的验证
             request.headers["Authorization"]="BasicAuth "+auth.getTicket();
             return request;
         },
 
         response: function (response) {
+            //对返回的结果提前检查
+            if(response.status==401){
+                Router.redirect('/login');
+            }
             return response;
         }
 

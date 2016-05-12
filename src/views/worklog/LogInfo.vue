@@ -9,7 +9,7 @@
 			<span class="icon-add" slot="rightBar" @click="addTask"></span>
 			<a class="icon-plus"   slot="rightBar" @click="addTask"></a>
 		</nav-bar>	 -->
-		<page-body>
+		<div>
 			<group>
 				<cell v-for="item in logInfo" >
 					<div slot="after-title">
@@ -43,7 +43,7 @@
 				</cell>
 			</group>
 			
-		</page-body>
+		</div>
 		<loading :show.sync="isloading">
 			加载中..
 		</loading>
@@ -52,7 +52,6 @@
 
 
 <script lang="babel">
-	import {PageBody} from '../../components/'
 	import {Loading,Group,Cell,XHeader} from 'vux'
 	import auth from '../utils/auth'
 
@@ -78,7 +77,7 @@
 			  this.userId=this.$root.userId;
 			  console.log("loginfo-"+this.userId);
 			  this.isloading=true;
-			  var rUrl='WorkLog/'+this.curDay+"/10685";
+			  var rUrl='WorkLog/'+this.curDay+"/";
 
 			  this.$http.get(rUrl).then((response)=>{
 			  	this.isloading=false;
@@ -93,7 +92,6 @@
 			}
 		},
 		components:{
-			PageBody,
 			Loading,
 			Cell,
 			Group,

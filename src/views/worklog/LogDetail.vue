@@ -1,20 +1,22 @@
 <template>
 	<div class="page logDetail">
-		<nav-bar :text="curDay">
-			<span class="icon-chevron-left" slot="leftBar" @click="back()">返回</span>
-		</nav-bar>	
-		<page-body>
+		<x-header>
+			<p>{{curDay}}</p>
+		</x-header>
+		
+		<div>
 			<group title="时间">
-				<datetime :value.sync="sTime" format="YYYY-MM-DD HH:II"  title="开始时间" confirm-text="完成" cancel-text="取消"></datetime>
-				<datetime :value.sync="eTime" format="YYYY-MM-DD HH:II"  title="结束时间" confirm-text="完成" cancel-text="取消"></datetime>
+				<datetime :value.sync="sTime" format="YYYY-MM-DD HH:mm"  title="开始时间" confirm-text="完成" cancel-text="取消"></datetime>
+				<datetime :value.sync="eTime" format="YYYY-MM-DD HH:mm"  title="结束时间" confirm-text="完成" cancel-text="取消"></datetime>
 			</group>
 			<group title="内容信息">
-				<x-input title="日志标题" :min=3 :max=20 :value.sync="title" is-type="china_name" placeholder="日志标题:长度3~20"></x-input>
-				<popup-picker title="工作类型" :columns="1" :data="typeOptions" :value.sync="wType" show-name>
+				<popup-picker title="工作类型" :columns="2" :data="typeOptions" :value.sync="wType"  show-name >
 				</popup-picker>
-				<popup-picker title="项目" :columns="2" :data="projectList" :value.sync="project" show-name>
+				<x-input title="日志标题" :min=3 :max=20 :value.sync="subTitle" is-type="china_name" placeholder="日志标题:长度3~20" ></x-input>
+			
+				<popup-picker title="项目" :columns="1" :data="projectList" :value.sync="project" show-name>
 				</popup-picker>
-				 <textarea :max=200 placeholder="请填写日志内容" ></textarea>
+				 <x-textarea :max=200 placeholder="请填写日志内容"  :required="true" ></x-textarea>
 			</group>
 			
 			<box gap="10px 10px">
@@ -22,7 +24,7 @@
 						提交
 					</x-button>
 			</box>
-		</page-body>
+		</div>
 
 		<toast :show.sync="isloading" >
 			保存中。。
@@ -32,9 +34,7 @@
 
 
 <script lang="babel">
-	
-	import {NavBar,PageBody} from '../../components/'
-  import { PopupPicker, Group, Picker,GroupTitle,Input as XInput,Datetime,Textarea,Toast,XButton,Flexbox,FlexboxItem,Box } from 'vux'
+  import { PopupPicker, Group, Picker,GroupTitle,XInput,Datetime,XTextarea,Toast,XButton,Flexbox,FlexboxItem,Box,XHeader } from 'vux'
 	export default {
 		name:'logdetail',
 		data(){
@@ -43,9 +43,9 @@
 				type:'',
 				typeOptions:[{value:'XMGZLB',name:"项目工作"},
 						  {value:'RCGZLB',name:"日常工作"},
-						  {value:'SHGZLB',name:"售后工作"}],
-				projectList:[{value:'main',name:'我主导',parent:0},{value:'part',name:'我参与',parent:0},{value:'11',name:'山东',parent:'main'}
-										,{value:'11',name:'上海麻醉临床信息系统V5.0',parent:'part'}],
+						  {value:'SHGZLB',name:"售后工作"},{value:'main',name:'我主导',parent:'XMGZLB'},{value:'part',name:'我参与',parent:'XMGZLB'}],
+				projectList:[],
+				allProList:[],
 				wType:[],
 				title:'',
 				memo:'',
@@ -59,14 +59,24 @@
 				eTime:''
 			}
 		},
+		//加载对应的项目信息
+		ready () {
+			this.$http.get('Project').then((response)=>{
+				this.allProList=response.data;
+				console.log(this.allProList);
+			});
+		},
 		route:{
 			//加载数
 			data(transition){
-				
+				var date=new Date();
+
 				//加载数据
 			  this.curDay=transition.to.params.date;
 			  this.type=transition.to.query.type=="add"||'edit';
-			 
+			  this.sTime=this.curDay+' 08:50';
+			  this.eTime=this.curDay+' 17:50';
+
 			}
 		},
 		computed:{
@@ -75,11 +85,20 @@
 			},
 			ckMemo:function(){
 				return this.memo.length==0;
+			},
+			subTitle () {
+				//通过选择的值找到
+				var workType=this.wType[0];
+				var wName="";
+				this.typeOptions.forEach((item)=>{
+					if(item.value==workType){
+						wName=item.name;
+					}
+				});
+				return '['+this.curDay+']'+wName;
 			}
 		},
 		components:{
-			NavBar,
-			PageBody,
 			Toast,
 			PopupPicker,
 			Picker,
@@ -87,10 +106,11 @@
 			GroupTitle,
 			XInput,
 			Datetime,
-			Textarea,
+			XTextarea,
 			XButton,
 			Flexbox,FlexboxItem,
-			Box
+			Box,
+			XHeader
 		},
 		methods:{
 			clearForm(){
@@ -109,9 +129,9 @@
 			saveLog(){
 				//1:提交表单内容
 				var postData={
-					SubTitle:this.title,
-					StartTime:this.curDay+" "+this.sTime,
-					EndTime:this.curDay+" "+this.eTime,
+					SubTitle:this.subTitle,
+					StartTime:this.sTime,
+					EndTime:this.eTime,
 					WorkType:this.wType,
 					ProjectCode:this.projectCode,
 					ActionUser:this.$root.userId,
@@ -137,5 +157,9 @@
 
 	.logDetail .page-bd{
 		padding-bottom: 30px;
+	}
+
+	textarea{
+		height: 200px;
 	}
 </style>
