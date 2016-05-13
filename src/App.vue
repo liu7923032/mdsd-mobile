@@ -6,17 +6,28 @@
         keep-alive
         transition="slide">
       </router-view>
+
+      <toast :show="showToast" type="cancel" :time="4000">
+        <p>网络连接失败,请检查网络</p>
+      </toast>
   </div>
 </template>
 
 
+
 <script lang="babel">
+    import { Toast } from 'vux'
+
     import auth from './views/utils/auth.js'
     export default {
       data () {
         return {
-           ticket:''
+           ticket:'',
+           showToast:false
         }
+      },
+      components:{
+        Toast
       },
       created () {
         //检查是否登陆

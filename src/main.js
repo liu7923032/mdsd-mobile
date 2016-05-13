@@ -20,6 +20,7 @@ import filters from './filters/filters';
 
 
 
+
     // 1:创建启动的版本
 
 Vue.use(Router)
@@ -43,9 +44,14 @@ Vue.http.interceptors.push(function () {
         },
 
         response: function (response) {
+            console.log(response);
             //对返回的结果提前检查
             if(response.status==401){
                 Router.redirect('/login');
+            }else if(response.status==0){
+
+                this.$root.showToast=true;
+                console.log("网络连接失败");
             }
             return response;
         }

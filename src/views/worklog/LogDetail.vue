@@ -4,7 +4,7 @@
 			<p>{{curDay}}</p>
 		</x-header>
 		
-		<div>
+		<div style="overflow-y:auto;">
 			<group title="时间">
 				<datetime :value.sync="sTime" format="YYYY-MM-DD HH:mm"  title="开始时间" confirm-text="完成" cancel-text="取消"></datetime>
 				<datetime :value.sync="eTime" format="YYYY-MM-DD HH:mm"  title="结束时间" confirm-text="完成" cancel-text="取消"></datetime>
@@ -12,11 +12,11 @@
 			<group title="内容信息">
 				<popup-picker title="工作类型" :columns="2" :data="typeOptions" :value.sync="wType"  show-name >
 				</popup-picker>
-				<x-input title="日志标题" :min=3 :max=20 :value.sync="subTitle" is-type="china_name" placeholder="日志标题:长度3~20" ></x-input>
+				<x-input title="日志标题" :min="2" :max="20" :value.sync="subTitle" is-type="china_name" placeholder="日志标题:长度3~20" ></x-input>
 			
 				<popup-picker title="项目" :columns="1" :data="projectList" :value.sync="project" show-name>
 				</popup-picker>
-				 <x-textarea :max=200 placeholder="请填写日志内容"  :required="true" ></x-textarea>
+				 <x-textarea :max="200"  :row="6"  :value.sync="remark"  placeholder="请填写日志内容"></x-textarea>
 			</group>
 			
 			<box gap="10px 10px">
@@ -48,15 +48,14 @@
 				allProList:[],
 				wType:[],
 				title:'',
-				memo:'',
-				subTypeData:[['小米', 'iPhone', '华为', '情怀', '三星', '其他', '不告诉你']],
-				subType:[],
+				remark:'',
 				project:[],
 				projectCode:'',
 				projectName:'',
 				isloading:false,
 				sTime:'',
-				eTime:''
+				eTime:'',
+				isRequered:true
 			}
 		},
 		//加载对应的项目信息
@@ -80,12 +79,6 @@
 			}
 		},
 		computed:{
-			ckTitle:function () {
-				return this.title.length==0;
-			},
-			ckMemo:function(){
-				return this.memo.length==0;
-			},
 			subTitle () {
 				//通过选择的值找到
 				var workType=this.wType[0];
@@ -108,7 +101,6 @@
 			Datetime,
 			XTextarea,
 			XButton,
-			Flexbox,FlexboxItem,
 			Box,
 			XHeader
 		},
@@ -116,7 +108,7 @@
 			clearForm(){
 					this.sTime='';
 			  	this.eTime='';
-			  	this.memo='';
+			  	this.remark='';
 			  	this.wType=[];
 			  	this.subType=[];
 			},
@@ -132,18 +124,18 @@
 					SubTitle:this.subTitle,
 					StartTime:this.sTime,
 					EndTime:this.eTime,
-					WorkType:this.wType,
+					WorkType:this.wType[0],
 					ProjectCode:this.projectCode,
-					ActionUser:this.$root.userId,
-					SubItems:this.subType+"-"+this.memo,
-					device:this.$root.device
+					Remark:this.remark
 				};
+				console.log(postData);
 				this.isloading=true;
-				this.$http.post("WorkLog",postData).then((success)=>{
-					this.isloading=false;
-				},(error)=>{
-					this.isloading=false;
-				});
+
+				// this.$http.post("WorkLog",JSON.stringify(postData)).then((success)=>{
+				// 	this.isloading=false;
+				// },(error)=>{
+				// 	this.isloading=false;
+				// });
 			}
 		}
 	}
@@ -159,7 +151,5 @@
 		padding-bottom: 30px;
 	}
 
-	textarea{
-		height: 200px;
-	}
+	
 </style>
