@@ -4,6 +4,7 @@ import Project from './views/Project.vue'
 import Index from './views/Index.vue'
 import LogInfo from './views/worklog/LogInfo.vue'
 import LogDetail from './views/worklog/LogDetail.vue'
+import ProjectInfo from './views/project/ProjectInfo.vue'
 export default function(router) {
     router.map({
         '/': { //首页
@@ -22,6 +23,11 @@ export default function(router) {
             name: 'project',
             auth: true,
             component: Project
+        },
+        '/project/projectinfo/:id':{
+            name: 'proinfo',
+            auth: true,
+            component: ProjectInfo
         },
         // 工作日志
         '/worklog': {

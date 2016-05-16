@@ -37,21 +37,23 @@ Vue.http.options.root = 'http://localhost:9001/api';
 Vue.http.interceptors.push(function () {
     return {
         request: function (request) {
-            console.log(request);
+            //启用进度条
+            this.$root.loading=true;
             //在每次请求之前都加上人员的验证
             request.headers["Authorization"]="BasicAuth "+auth.getTicket();
             return request;
         },
-
         response: function (response) {
-            console.log(response);
+            console.log("处理返回结果");
+            //1:取消进度条显示
+             this.$root.loading=false;
+            
             //对返回的结果提前检查
             if(response.status==401){
                 Router.redirect('/login');
             }else if(response.status==0){
-
-                this.$root.showToast=true;
-                console.log("网络连接失败");
+                this.$root.toast=true;
+                // console.log("网络连接失败");
             }
             return response;
         }

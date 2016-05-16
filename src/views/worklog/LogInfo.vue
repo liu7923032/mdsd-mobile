@@ -1,9 +1,9 @@
 <template>
 	<div class="page logInfo">
-	<x-header >
-		<p>{{curDay}}</p>
-		<a class="icon-plus"   slot="right" @click="addTask"></a>
-	</x-header>
+		<x-header >
+			<p>{{curDay}}</p>
+			<a class="icon-plus"   slot="right" @click="addTask"></a>
+		</x-header>
 	<!-- 	<nav-bar :text="curDay">
 			<span class="icon-chevron-left" slot="leftBar" @click="back"></span>
 			<span class="icon-add" slot="rightBar" @click="addTask"></span>
@@ -42,17 +42,13 @@
 					</div>
 				</cell>
 			</group>
-			
 		</div>
-		<loading :show.sync="isloading">
-			加载中..
-		</loading>
 	</div>
 </template>
 
 
 <script lang="babel">
-	import {Loading,Group,Cell,XHeader} from 'vux'
+	import {Group,Cell,XHeader} from 'vux'
 	import auth from '../utils/auth'
 
 	export default {
@@ -61,8 +57,6 @@
 			return {
 				curDay:'',
 				logInfo: [],
-				userId:0,
-				isloading:false,
 				rightBtn:{
 					showMore:true
 				}
@@ -71,28 +65,18 @@
 		route:{
 			//加载数
 			data(transition){
-				console.log(transition);
 				//加载数据
 			  this.curDay=transition.to.params.date;
-			  this.userId=this.$root.userId;
-			  console.log("loginfo-"+this.userId);
-			  this.isloading=true;
-			  var rUrl='WorkLog/'+this.curDay+"/";
+			  var rUrl='WorkLog/'+this.curDay+"";
 
 			  this.$http.get(rUrl).then((response)=>{
-			  	this.isloading=false;
-
 			  	this.logInfo=response.data;
-			  	console.log(this.logInfo)
 			  },(error)=>{
-			  	//如果认证失败,status=401 那么跳转到登陆页
-			  	console.log(error.status);
-			  	this.isloading=false;
+			  	
 			  });
 			}
 		},
 		components:{
-			Loading,
 			Cell,
 			Group,
 			XHeader

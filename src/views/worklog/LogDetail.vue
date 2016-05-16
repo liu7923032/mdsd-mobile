@@ -26,9 +26,6 @@
 			</box>
 		</div>
 
-		<toast :show.sync="isloading" >
-			保存中。。
-		</toast>
 	</div>
 </template>
 
@@ -52,7 +49,6 @@
 				project:[],
 				projectCode:'',
 				projectName:'',
-				isloading:false,
 				sTime:'',
 				eTime:'',
 				isRequered:true

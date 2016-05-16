@@ -122,7 +122,7 @@ export default {
       }, {
         link: 'login',
         image:'./static/images/app/icon_nav_article.png',
-        text: '登陆'
+        text: '客服'
       }],
       selectIndex:0,
       msgItems:[{

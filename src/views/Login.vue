@@ -1,6 +1,6 @@
 <template>
 	<div class="page login">
-		<nav-bar text="登录页"></nav-bar>
+		<x-header :left-options="{showBack: false}"><p>登陆页</p></x-header>
 		<div class="page-bd">
 			<div class="loginUrl"> 
 				<img src="../assets/images/login/login.png" alt="用户">
@@ -35,7 +35,8 @@
 
 
 <script>
-	import NavBar from '../components/NavBar.vue'
+	import { XHeader } from 'vux'
+
 	import auth from './utils/auth.js'
 	import {ButtonArea,Button,Cells,Cell,CheckboxCell,InputCell,Dialog,Toast} from 'vue-weui'
 	export default {
@@ -50,6 +51,11 @@
 				device:'',
 				redirectUrl:'',
 				errMsg:''
+			}
+		},
+		route:{
+			data (transtion) {
+
 			}
 		},
 		ready(){
@@ -72,7 +78,7 @@
 			 this.redirectUrl= decodeURIComponent(this.$route.query.redirect || '/');
 		},
 		components:{
-			NavBar,
+			XHeader,
 			ButtonArea,
 			Button,
 			CheckboxCell,

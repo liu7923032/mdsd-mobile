@@ -7,27 +7,34 @@
         transition="slide">
       </router-view>
 
-      <toast :show="showToast" type="cancel" :time="4000">
-        <p>网络连接失败,请检查网络</p>
+      <toast :show="toast" :type="toastType" :time="2000">
+        <p>{{toastText}}</p>
       </toast>
+      <loading :show="loading" :text="loadText">
+      </loading>
   </div>
 </template>
 
 
 
 <script lang="babel">
-    import { Toast } from 'vux'
+    import { Toast,Loading } from 'vux'
 
     import auth from './views/utils/auth.js'
     export default {
       data () {
         return {
            ticket:'',
-           showToast:false
+          
+           loading:false, toast:false,
+           toastText:'网络连接失败',
+           toastType:'cancel',
+           loadText:'加载中..'
         }
       },
       components:{
-        Toast
+        Toast,
+        Loading
       },
       created () {
         //检查是否登陆

@@ -1,112 +1,119 @@
 <template>
-	<div class="page" >
-		<nav-bar text="我的项目">
-			<span class="icon-chevron-left" slot="leftBar" @click="back"></span>
-	        <span class="icon-refresh" slot="rightBar" @click="showSheet"></span>
-		</nav-bar>
+	<div class="page project" >
+		<x-header >
+			<p>项目信息</p>
+			<div slot="right">
+				
+			</div>
+		</x-header>
 		<tab>
-			<tab-item :selected="selectType==='我主导的项目'" @click="selectType='我主导的项目'">
+			<tab-item :selected="selectIndex === 0" @click="switchTab(0)">
 				我主导的项目
 			</tab-item>
-			<tab-item :selected="selectType==='我参与的项目'" @click="selectType='我参与的项目'">
+			<tab-item :selected="selectIndex === 1" @click="switchTab(1)">
 				我参与项目
 			</tab-item>
 		</tab>
 		<div class="weui_tab_bd">
-			
+		  <!-- 我主导的项目 -->
+			 <div v-show="selectIndex==0">
+	        <scroller lock-x scrollbar-y use-pullup :pullup-status.sync="pullupStatus" @pullup:loading="loadMore">
+	     		 <!--content slot-->
+		      <div class="box2" >
+		        	<cell  v-for="item in mainData" is-link v-link="'/project/projectinfo/'+item.id">
+                  <div slot="after-title">
+                    <span style="color: black">{{item.text}}</span>
+                  </div>
+               </cell>
+		      </div>
+		      <!--pullup slot-->
+		      <div slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; bottom: -40px; text-align: center;">
+		        <span v-show="pullupStatus === 'default'"></span>
+		        <span class="pullup-arrow" v-show="pullupStatus === 'down' || pullupStatus === 'up'" :class="{'rotate': pullupStatus === 'up'}">↑</span>
+		        <span v-show="pullupStatus === 'loading'"><spinner type="ios-small"></spinner></span>
+		      </div>
+		    </scroller>
+     	 </div>
+			<!-- 我参与的项目 -->
+				<div v-show="selectIndex==1">
+					  <scroller lock-x scrollbar-y use-pullup  :pullup-status.sync="pullupStatus" @pullup:loading="loadMore">
+		     		 <!--content slot-->
+			      <div class="box2">
+			        	<cell  v-for="item in partData" is-link v-link="'/project/projectinfo/'+item.id">
+	                  <div slot="after-title">
+	                    <span style="color: black;">{{item.text}}</span>
+	                  </div>
+	               </cell>
+			      </div>
+			      <!--pullup slot-->
+			      <div slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; bottom: -40px; text-align: center;">
+			        <span v-show="pullupStatus === 'default'"></span>
+			        <span class="pullup-arrow" v-show="pullupStatus === 'down' || pullupStatus === 'up'" :class="{'rotate': pullupStatus === 'up'}">↑</span>
+			        <span v-show="pullupStatus === 'loading'"><spinner type="ios-small"></spinner></span>
+			      </div>
+			    </scroller>
+				</div>
 		</div>
-	
-		<toast v-show="showToast" type="loading"> 
-			数据加载中...
-		</toast>
-		<actionsheet :show.sync="showsheet"  :menus="menuItems" :actions="actionItems" v-on:weui-menu-click="actionClick"></actionsheet>
 	</div>
 </template>
 
 <script lang="babel">
-	import {NavBar,PageBody} from '../components/'
-	import {Tab,TabItem} from 'vux'
-	import {Cells,LinkCell,CellsTitle,Toast,Actionsheet} from 'vue-weui'
+	import {Tab,TabItem,XHeader,Cell,Scroller,Spinner} from 'vux'
 
 	export default {
 		name: 'Project',
 		data () {
 			return {
-				showsheet:false,
-				menuItems:{camaer:'拍照',img:'选择图片'},
-				actionItems:{text:'取消'},
-				showToast:false,
-				selectType:'我主导的项目',
 				mainData:[],
 				partData:[],
-				//链接请求  默认是查看项目详情,select是选择项目
-				linkType:''
+				selectIndex:0,
+				pullupStatus:'default',
+				mainIndex:0,
+				partIndex:0
 			}
 		},
 		methods: {
-			back () {
-				history.back();
-			},
-			showSheet () {
-				this.showsheet=!this.showsheet;
-			},
-			actionClick (index) {
-				alert(index);
-			},
-			getInitData () {
-				alert('集合刷新');
-			},
-			getMoreData () {
-				alert("集合加载更多")
-			},
-			goPage (index,flag) {
-				var projectCode='';
-				var projectName='';
-				if(flag==0){
-					projectCode=this.mainData[index].id;
-					projectName=this.mainData[index].text;
-				}else{
-					projectCode=this.partData[index].id;
-					projectName=this.partData[index].text;
+			switchTab (flag) {
+				this.selectIndex=flag;
+				var data=flag==0?this.mainData:this.partData;
+				if(data.length==0){
+					this.loadMore(flag);
 				}
-				if(this.linkType=="select"){
-					this.$route.router.go({
-						name:'logdetail',
-						query:{
-							projectCode:projectCode,
-							projectName:projectName
+			},
+			loadMore (type) {
+				var index=type==0?this.mainIndex:this.partIndex;
+				this.$http.get('Project',{type:type,pageIndex:index}).then((response)=>{
+						if(type==0){
+							if(index==0){
+								this.mainData=response.data;
+							}else{
+								this.mainData.concat(response.data);
+							}
+							this.mainIndex++;
+						}else{
+							if(index==0){
+								this.partData=response.data;
+							}else{
+								this.partData.concat(response.data);
+							}
+							this.partIndex++;
 						}
-					});
-				}else{
+				},(error)=>{
 
-				}
+				})
 			}
 		},
 		components:{
-			NavBar,
-			Actionsheet,
-			Toast,
-			PageBody,
 			TabItem,
 			Tab,
-			Cells,
-			LinkCell,
-			CellsTitle
+			Cell,
+			XHeader,
+			Scroller,
+			Spinner
 		},
 		route: {
 			data (transition) {
-				this.linkType=transition.to.params.linkType||'';
-				//加载项目信息
-				this.showToast=true;
-				this.$http.get("Project",{"type":0,"key":"",userId:10353}).then((response)=>{
-					console.log(response);
-					this.showToast=false;
-					var data=response.data;
-					this.mainData=data;
-
-				},(error)=>{
-					this.showToast=false;
-				})
+				this.loadMore(0);
 			}
 		}
 	}
@@ -114,7 +121,10 @@
 
 
 <style scoped>
-	.page-bd{
+
+
+	.project{
 		padding-bottom: 85px;
+
 	}
 </style>
