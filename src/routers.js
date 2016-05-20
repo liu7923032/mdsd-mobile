@@ -35,12 +35,12 @@ export default function(router) {
             auth: true,
             component: require('./views/WorkLog.vue')
         },
-        '/loginfo/:date':{
+        '/worklog/loginfo/:date':{
             name:'loginfo',
             auth: true,
             component: LogInfo
         },
-        '/logdetail/:date':{
+        '/worklog/logdetail/:date':{
             name:'logdetail',
             auth: true,
             component: LogDetail

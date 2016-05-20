@@ -1,48 +1,40 @@
 <template>
 	<div class="page logInfo">
-		<x-header >
+		<x-header :right-options="{showMore: true}" :left-options="{showBack:true,backText:'返回'}" @on-click-more="addTask">
 			<p>{{curDay}}</p>
-			<a class="icon-plus"   slot="right" @click="addTask"></a>
 		</x-header>
-	<!-- 	<nav-bar :text="curDay">
-			<span class="icon-chevron-left" slot="leftBar" @click="back"></span>
-			<span class="icon-add" slot="rightBar" @click="addTask"></span>
-			<a class="icon-plus"   slot="rightBar" @click="addTask"></a>
-		</nav-bar>	 -->
-		<div>
-			<group>
-				<cell v-for="item in logInfo" >
-					<div slot="after-title">
-						<table class="log">
-							<tbody>
-								<tr>
-									<td class="tdLabel">日志名称</td>
-									<td>{{item.LogTitle}}</td>
-								</tr>
+		<group>
+			<cell v-for="item in logInfo" >
+				<div slot="after-title">
+					<table class="log">
+						<tbody>
+							<tr>
+								<td class="tdLabel">日志名称</td>
+								<td>{{item.LogTitle}}</td>
+							</tr>
 
-								<tr>
-									<td class="tdLabel">开始时间</td>
-									<td>{{item.SDate}}</td>
-								</tr>
-								<tr>
-									<td class="tdLabel">结束时间</td>
-									<td>{{item.EDate}}</td>
-								</tr>
-								<tr>
-									<td class="tdLabel">工作类型</td>
-									<td >{{item.WType}}</td>
-								</tr>
-								
-								<tr v-for="subItem in item.SubItems">
-									<td class="tdLabel">{{subItem.SubType}}</td>
-									<td>{{{ subItem.SubContent | replace '\n' '&lt;br /&gt;' }}}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</cell>
-			</group>
-		</div>
+							<tr>
+								<td class="tdLabel">开始时间</td>
+								<td>{{item.SDate}}</td>
+							</tr>
+							<tr>
+								<td class="tdLabel">结束时间</td>
+								<td>{{item.EDate}}</td>
+							</tr>
+							<tr>
+								<td class="tdLabel">工作类型</td>
+								<td >{{item.WType}}</td>
+							</tr>
+							
+							<tr>
+								<td class="tdLabel">详细信息</td>
+								<td>{{{ item.Remark | replace '\n' '&lt;br /&gt;' }}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</cell>
+		</group>
 	</div>
 </template>
 
@@ -86,8 +78,8 @@
 				history.back();
 			},
 			addTask(){
-				console.log("新增")
-				this.$route.router.go({name:'logdetail',params:{date:this.curDay},query:{type:'add'}});
+				var addPath="/worklog/logdetail/"+this.curDay+"?type=add";
+				this.$route.router.go({path:addPath});
 			}
 		}
 	}

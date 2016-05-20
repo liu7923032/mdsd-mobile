@@ -1,31 +1,24 @@
 <template>
 	<div class="page worklog">
-		<nav-bar text="工作日志">
-			<span class="icon-chevron-left" slot="leftBar" @click="back()"></span>
-			<span slot="rightBtn"></span>
-		</nav-bar>
-		<page-body>
-			<group-title>
-				<div>开始:{{startDay}} 结束:{{endDay}}</div>
-			</group-title>
-			<cells type="access">
-				<link-cell v-for="item in dateRange" :router-link="{ name: 'loginfo', params: { date: item }}">
-					<div slot="header" :class="{'week':($index==5 ||$index==6)}">{{ getZNWeek($index) }}</div>
-					<div slot="body">
+		<x-header :left-options="{showBack:true,backText:'返回'}"> 
+			<p>工作日志</p>
+		</x-header>
+		<group :title="groupTitle">
+			<cell  v-for="item in dateRange" is-link v-link="'/worklog/loginfo/'+item" >
+					<div slot="icon" :class="{'week':($index==5 ||$index==6)}">{{ getZNWeek($index) }}</div>
+					<div slot="after-title">
 						<div class="time">
 							{{item}}
 						</div>
 					</div>
-				</link-cell>
 			</cells>
-		</page-body>
+			</group>
 	</div>
 	
 </template>
 
 <script>
-	import {NavBar,PageBody,Cells,LinkCell} from '../components/';
-	import {GroupTitle} from 'vux'
+	import {XHeader,Group,Cell} from 'vux'
 	import DateHelper from '../assets/js/DateHelper.js'
 
 	export default {
@@ -43,6 +36,11 @@
 			console.log(this.startDay);
 			this.endDay=DateHelper.weekLastDay();
 			this.dateRange=this.getDateRange();
+		},
+		computed:{
+			groupTitle () {
+				return "开始:"+this.startDay+" 结束:"+this.endDay;
+			}
 		},
 		methods:{
 			back(){
@@ -95,27 +93,22 @@
 			}
 		},
 		components:{
-			NavBar,
-			PageBody,
-			LinkCell,
-			GroupTitle,
-			Cells
+			Cell,
+			XHeader,
+			Group,
 		}
 	}
 </script>
 
 <style scoped>
-	.weui_cells_title>div{
-		text-align: center;
-		font-size: 17px;
-		margin-bottom: 10px;
-	}
-
-	.weui_cell_bd>div{
-		padding-left: 10px;
-	}
+	
 
 	.week{
 		color: red;
 	}
+
+	.time{
+		margin-left: 10px;
+	}
+
 </style>

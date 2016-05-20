@@ -25,7 +25,6 @@
             </div>
           </scroller>
         </div>
-        
         <div v-show="selectIndex==1" >
             <grids>
               <grid v-for="item in items" :router-link="{path: '/' + item.link}" :image-url="item.image" :label="item.text"></grid>
@@ -33,36 +32,41 @@
         </div>
         <div v-show="selectIndex==2">
             <Group title="个人基本信息">
+            <cell title="工号" >
+                <div slot="value">
+                  <span style="color: green">{{user.GongHao}}</span>
+                </div>
+              </cell>
               <cell title="姓名" >
                 <div slot="value">
-                  <span style="color: green">刘克志</span>
+                  <span style="color: green">{{user.UserName}}</span>
                 </div>
               </cell>
               <cell title="部门" >
                 <div slot="value">
-                  <span style="color: green">信息管理中心</span>
+                  <span style="color: green">{{user.DeptName}}</span>
                 </div>
               </cell>
-              <cell title="年假结余" >
+              <cell title="岗位" >
                 <div slot="value">
-                  <span style="color: green">3天</span>
+                  <span style="color: green">{{user.PostName}}</span>
+                </div>
+              </cell>
+              <cell title="年假" >
+                <div slot="value">
+                  <span style="color: green">{{user.YearDays}}</span>
                 </div>
               </cell>
               <cell title="福利假" >
                 <div slot="value">
-                  <span style="color: green">1天</span>
-                </div>
-              </cell>
-              <cell title="探亲假" >
-                <div slot="value">
-                  <span style="color: green">1天</span>
+                  <span style="color: green">{{user.ServiceDays}}</span>
                 </div>
               </cell>
             </Group>
         </div>
       </div>
     </div>
-        <tabbar>
+      <tabbar>
         <tabbar-item selected>
           <img slot="icon" src="../assets/images/app/icon_nav_msg.png">
           <span slot="label">消息</span>
@@ -129,12 +133,14 @@ export default {
         type:"0",
         title:'我的测试一下'
       }],
-      pulldownStatus:"default"
+      pulldownStatus:"default",
+      user:{"UserName":'',"PostName":'',"DeptName":'',"GongHao":'',"YearDays":0,"ServiceDays":0}
     }
   },
 
   route: {
-    data ({ to }) {
+    data (transition) {
+      this.getUserInfo();
     }
   },
 
@@ -163,6 +169,14 @@ export default {
           });
         _this.$broadcast('pulldown:reset', uuid);
       }, 1000)
+    },
+    getUserInfo(){
+      this.$http.get("UserInfo").then((success)=>{
+        this.user=success.data;
+              console.log(success.data);
+      },(error)=>{
+
+      })
     }
   },
   events:{

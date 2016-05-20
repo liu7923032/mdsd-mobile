@@ -25,8 +25,8 @@
       data () {
         return {
            ticket:'',
-          
-           loading:false, toast:false,
+           loading:false,
+           toast:false,
            toastText:'网络连接失败',
            toastType:'cancel',
            loadText:'加载中..'

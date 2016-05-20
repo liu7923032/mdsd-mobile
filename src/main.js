@@ -33,7 +33,7 @@ Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
 // Vue.http.options.root = 'http://ht.mdsd.cn:9000/api';
 Vue.http.options.root = 'http://localhost:9001/api';
 
-// 发送请求的拦截器
+// 发送请求和返回的拦截器
 Vue.http.interceptors.push(function () {
     return {
         request: function (request) {
@@ -44,10 +44,8 @@ Vue.http.interceptors.push(function () {
             return request;
         },
         response: function (response) {
-            console.log("处理返回结果");
             //1:取消进度条显示
              this.$root.loading=false;
-            
             //对返回的结果提前检查
             if(response.status==401){
                 Router.redirect('/login');
@@ -69,7 +67,10 @@ Vue.http.interceptors.push(function () {
 // 创建的组件构造函数，也可以是一个组件选项对象。
 // 稍后我们会讲解嵌套路由
 //注册路由
-var router = new Router();
+var router = new Router({
+    history:true,
+    saveScrollPosition:true
+});
 routerMap(router);
 
 // router.redirect({

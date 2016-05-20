@@ -1,6 +1,6 @@
 <template>
 	<div class="page project" >
-		<x-header >
+		<x-header :left-options="{showBack:true,backText:'返回'}">
 			<p>项目信息</p>
 			<div slot="right">
 				
@@ -20,11 +20,11 @@
 	        <scroller lock-x scrollbar-y use-pullup :pullup-status.sync="pullupStatus" @pullup:loading="loadMore">
 	     		 <!--content slot-->
 		      <div class="box2" >
-		        	<cell  v-for="item in mainData" is-link v-link="'/project/projectinfo/'+item.id">
+		        	<cell v-for="item in mainData" is-link v-link="'/project/projectinfo/'+item.value">
                   <div slot="after-title">
-                    <span style="color: black">{{item.text}}</span>
+                    <span style="color: black">{{item.name}}</span>
                   </div>
-               </cell>
+              </cell>
 		      </div>
 		      <!--pullup slot-->
 		      <div slot="pullup" class="xs-plugin-pullup-container xs-plugin-pullup-up" style="position: absolute; width: 100%; height: 40px; bottom: -40px; text-align: center;">
@@ -39,9 +39,9 @@
 					  <scroller lock-x scrollbar-y use-pullup  :pullup-status.sync="pullupStatus" @pullup:loading="loadMore">
 		     		 <!--content slot-->
 			      <div class="box2">
-			        	<cell  v-for="item in partData" is-link v-link="'/project/projectinfo/'+item.id">
+			        	<cell  v-for="item in partData" is-link v-link="'/project/projectinfo/'+item.value">
 	                  <div slot="after-title">
-	                    <span style="color: black;">{{item.text}}</span>
+	                    <span style="color: black;">{{item.name}}</span>
 	                  </div>
 	               </cell>
 			      </div>
@@ -69,7 +69,8 @@
 				selectIndex:0,
 				pullupStatus:'default',
 				mainIndex:0,
-				partIndex:0
+				partIndex:0,
+				srcType:''
 			}
 		},
 		methods: {
@@ -114,6 +115,7 @@
 		route: {
 			data (transition) {
 				this.loadMore(0);
+				
 			}
 		}
 	}
