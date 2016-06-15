@@ -66,20 +66,20 @@
         </div>
       </div>
     </div>
-      <tabbar>
-        <tabbar-item selected>
-          <img slot="icon" src="../assets/images/app/icon_nav_msg.png">
-          <span slot="label">消息</span>
-        </tabbar-item>
-        <tabbar-item >
-          <img slot="icon" src="../assets/images/app/icon_nav_actionSheet.png">
-          <span slot="label">应用</span>
-       </tabbar-item>
-        <tabbar-item>
-          <img slot="icon" src="../assets/images/app/icon_nav_cell.png">
-          <span slot="label">我</span>
-        </tabbar-item>
-      </tabbar>
+    <tabbar>
+      <tabbar-item selected>
+        <img slot="icon" src="../assets/images/app/icon_nav_msg.png">
+        <span slot="label">消息</span>
+      </tabbar-item>
+      <tabbar-item >
+        <img slot="icon" src="../assets/images/app/icon_nav_actionSheet.png">
+        <span slot="label">应用</span>
+     </tabbar-item>
+      <tabbar-item>
+        <img slot="icon" src="../assets/images/app/icon_nav_cell.png">
+        <span slot="label">我</span>
+      </tabbar-item>
+    </tabbar>
 </div>
 </template>
 

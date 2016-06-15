@@ -7,10 +7,10 @@
         transition="slide">
       </router-view>
 
-      <toast :show="toast" :type="toastType" :time="2000">
-        <p>{{toastText}}</p>
+      <toast :show="toast.show" :type="toast.type" :time="2000">
+        <p>{{toast.text}}</p>
       </toast>
-      <loading :show="loading" :text="loadText">
+      <loading :show="loading.show" :text="loading.text">
       </loading>
   </div>
 </template>
@@ -25,11 +25,8 @@
       data () {
         return {
            ticket:'',
-           loading:false,
-           toast:false,
-           toastText:'网络连接失败',
-           toastType:'cancel',
-           loadText:'加载中..'
+           loading:{show:false,text:'加载中'},
+           toast:{show:false,type:'cancel',text:'网络连接失败'}
         }
       },
       components:{
@@ -57,7 +54,7 @@
 
 @import '~vux/vux.css';
 
-	
+
 /*当你设置一个元素为 box-sizing: border-box; 时，此元素的内边距和边框不再会增加它的宽度*/
 * {
   -webkit-box-sizing: border-box;

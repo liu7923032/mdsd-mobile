@@ -22,23 +22,30 @@
 			</group>
 
 		  <popup :show.sync="popshow" style="height:100%;">
-		  	<div>
-		  		 <group title="我主导的项目">
-	        	<cell v-for="item in mainData"  :title="item.text" @click.preventDefault="choosePro(item)">
-	        	</cell>
-	        </group>
-	        <group title="我参与的项目">
-	        	<cell v-for="item in partData"  :title="item.text" @click.preventDefault="choosePro(item)">
-	        	</cell>
-	        </group>
-		  	</div>
+			  	<div>
+				  	<scroller lock-x>
+				  		 <group title="我主导的项目">
+					        	<cell v-for="item in mainData"  :title="item.text" @click.preventDefault="choosePro(item)">
+					        	</cell>
+			        </group>
+				         <!-- </scroller> -->
+
+			        <group title="我参与的项目">
+				        <!-- <scroller lock-x> -->
+					        	<cell v-for="item in partData"  :title="item.text" @click.preventDefault="choosePro(item)">
+					        	</cell>
+			        </group>
+		        </scroller>
+
+			  	</div>
+		  	
 	    </popup>
 	</div>
 </template>
 
 
 <script lang="babel">
-  import { PopupPicker, Group,XInput,Datetime,XTextarea,XButton,Box,XHeader,Cell,Popup,Search } from 'vux'
+  import { PopupPicker, Group,XInput,Datetime,XTextarea,XButton,Box,XHeader,Cell,Popup,Search,Scroller } from 'vux'
 	export default {
 		name:'logdetail',
 		data(){
@@ -106,7 +113,8 @@
 			XHeader,
 			Cell,
 			Popup,
-			Search
+			Search,
+			Scroller
 		},
 	
 		methods:{
@@ -141,6 +149,7 @@
 			},
 			clearForm(){
 			  	this.remark='';
+			  	this.project={"id":'',"text":''};
 			},
 			loadMore (index) {
 				var index=type==0?this.mainIndex:this.partIndex;
@@ -167,9 +176,10 @@
 				};
 				this.$http.post("WorkLog",JSON.stringify(postData)).then((success)=>{
 					//提示保存成功
-					this.$root.toastType="ok";
-					this.$root.toastText="保存成功";
-					this.$root.toast=true;
+					this.$root.toast={type:'ok',text:'保存成功',show:true};
+					//清空表单信息
+					this.clearForm();
+					//设置
 					history.back();
 				},(error)=>{
 

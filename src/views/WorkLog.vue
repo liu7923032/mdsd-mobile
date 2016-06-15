@@ -33,7 +33,6 @@
 		},
 		ready(){
 			this.startDay=DateHelper.weekFirstDay();
-			console.log(this.startDay);
 			this.endDay=DateHelper.weekLastDay();
 			this.dateRange=this.getDateRange();
 		},
@@ -43,13 +42,7 @@
 			}
 		},
 		methods:{
-			back(){
-				history.back();
-			},
 			//子控件触发事件后执行的方法
-			selectDay(day){
-				alert(day);
-			},
 			getDateRange(){
 				var tempRange=[];
 				//1:得到当前月份的天数

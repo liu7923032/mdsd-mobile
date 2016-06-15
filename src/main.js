@@ -45,12 +45,12 @@ Vue.http.interceptors.push(function () {
         },
         response: function (response) {
             //1:取消进度条显示
-             this.$root.loading=false;
+             this.$root.loading={show:false,text:''}
             //对返回的结果提前检查
             if(response.status==401){
                 Router.redirect('/login');
             }else if(response.status==0){
-                this.$root.toast=true;
+                this.$root.toast={show:false,type:'cancel',text:'网络连接失败'}
                 // console.log("网络连接失败");
             }
             return response;
