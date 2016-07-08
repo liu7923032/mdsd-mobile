@@ -20,13 +20,17 @@ import CellFooter from './cells/cell-footer.vue';
 import CellInput from './cells/cell-input.vue';
 import CellSelect from './cells/cell-select.vue';
 
-const MyUI = {
+import Uploader from './uploader/uploader.vue'
+
+import UploaderFiles from './uploader/uploader-file.vue'
+
+import UploaderFile from './uploader/uploader-files.vue'
+
+const myui = {
   NavBar,
   PageBody,
   Grids,
   Grid,
-  CellsTitle,
-  CellsTitle,
   Cells,
   Cell,
   LinkCell,
@@ -39,8 +43,11 @@ const MyUI = {
   CellBody,
   CellFooter,
   CellInput,
-  CellSelect
+  CellSelect,
+  Uploader,
+  UploaderFiles,
+  UploaderFile
 }
 
-module.exports = MyUI
+module.exports = myui
 

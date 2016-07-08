@@ -21,7 +21,7 @@ import filters from './filters/filters';
 
 
 
-    // 1:创建启动的版本
+// 1:创建启动的版本
 
 Vue.use(Router)
 Vue.use(VueResource)
@@ -33,24 +33,28 @@ Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
 // Vue.http.options.root = 'http://ht.mdsd.cn:9000/api';
 Vue.http.options.root = 'http://localhost:9001/api';
 
+
+
 // 发送请求和返回的拦截器
 Vue.http.interceptors.push(function () {
     return {
         request: function (request) {
+
             //启用进度条
-            this.$root.loading=true;
+            this.$root.loading = { show: true, text: '加载中...' };
             //在每次请求之前都加上人员的验证
-            request.headers["Authorization"]="BasicAuth "+auth.getTicket();
+            request.headers["Authorization"] = "BasicAuth " + auth.getTicket();
             return request;
         },
         response: function (response) {
+           
             //1:取消进度条显示
-             this.$root.loading={show:false,text:''}
+            this.$root.loading = { show: false, text: '' }
             //对返回的结果提前检查
-            if(response.status==401){
+            if (response.status == 401) {
                 Router.redirect('/login');
-            }else if(response.status==0){
-                this.$root.toast={show:false,type:'cancel',text:'网络连接失败'}
+            } else if (response.status == 0) {
+                this.$root.toast = { show: false, type: 'cancel', text: '网络连接失败' }
                 // console.log("网络连接失败");
             }
             return response;
@@ -68,8 +72,8 @@ Vue.http.interceptors.push(function () {
 // 稍后我们会讲解嵌套路由
 //注册路由
 var router = new Router({
-    history:true,
-    saveScrollPosition:true
+    history: true,
+    saveScrollPosition: true
 });
 routerMap(router);
 
@@ -79,9 +83,9 @@ routerMap(router);
 
 //消除click延迟
 if ('addEventListener' in document) {
-  document.addEventListener('DOMContentLoaded', function() {
-      FastClick.attach(document.body);
-  }, false);
+    document.addEventListener('DOMContentLoaded', function () {
+        FastClick.attach(document.body);
+    }, false);
 }
 
 
@@ -91,9 +95,9 @@ router.beforeEach(transition => {
     //处理左侧滚动不影响右边
     // $("html, body, #page").removeClass("scroll-hide");
     if (transition.to.auth) {
-        console.log("要访问的路径:"+transition.to.path);
+        console.log("要访问的路径:" + transition.to.path);
         if (auth.isLogin()) {
-        // if(true){
+            // if(true){
             transition.next();
         } else {
             var redirect = encodeURIComponent(transition.to.path);

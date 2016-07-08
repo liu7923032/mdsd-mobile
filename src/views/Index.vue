@@ -4,7 +4,6 @@
       <p>首页</p>
     </x-header>
     
-    <div class="page-bd space">
       <div class="weui-tab-bd">
         <div v-show="selectIndex==0">
             <scroller lock-x scrollbar-y use-pulldown  :pulldown-status.sync="pulldownStatus" @pulldown:loading="loadMsg">
@@ -65,17 +64,16 @@
             </Group>
         </div>
       </div>
-    </div>
     <tabbar>
-      <tabbar-item selected>
+      <tabbar-item selected @click="this.selectIndex=0">
         <img slot="icon" src="../assets/images/app/icon_nav_msg.png">
         <span slot="label">消息</span>
       </tabbar-item>
-      <tabbar-item >
+      <tabbar-item @click="this.selectIndex=1">
         <img slot="icon" src="../assets/images/app/icon_nav_actionSheet.png">
         <span slot="label">应用</span>
      </tabbar-item>
-      <tabbar-item>
+      <tabbar-item @click="this.selectIndex=2">
         <img slot="icon" src="../assets/images/app/icon_nav_cell.png">
         <span slot="label">我</span>
       </tabbar-item>
@@ -108,6 +106,10 @@ export default {
         image:'./static/images/app/icon_nav_cell.png',
         text: '项目',
       }, {
+        link: 'cservice',
+        image:'./static/images/app/icon_nav_article.png',
+        text: '客服'
+      }, {
         link: 'worklog',
         image:'./static/images/app/icon_nav_icons.png',
         text: '日志'
@@ -123,10 +125,6 @@ export default {
         link: 'progress',
         image:'./static/images/app/icon_nav_dialog.png',
         text: '知识分享'
-      }, {
-        link: 'login',
-        image:'./static/images/app/icon_nav_article.png',
-        text: '客服'
       }],
       selectIndex:0,
       msgItems:[{
@@ -170,6 +168,9 @@ export default {
         _this.$broadcast('pulldown:reset', uuid);
       }, 1000)
     },
+    onItemClick (a) {
+      console.log("11111111");
+    },
     getUserInfo(){
       this.$http.get("UserInfo").then((success)=>{
         this.user=success.data;
@@ -177,12 +178,6 @@ export default {
       },(error)=>{
 
       })
-    }
-  },
-  events:{
-    'on-item-click':function(index){
-      this.selectIndex=index;
-      console.log(this.selectIndex);
     }
   },
   filters: {

@@ -59,7 +59,7 @@ app.use('/static', express.static('./src/assets'));
 
 
 
-app.listen(8080, '192.168.1.39', function (err) {
+app.listen(8080, 'localhost', function (err) {
   if (err) {
     console.log(err)
     return

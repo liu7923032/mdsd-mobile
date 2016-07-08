@@ -8,14 +8,14 @@
 					<datetime :value.sync="eTime" format="YYYY-MM-DD HH:mm"  title="结束时间" confirm-text="完成" cancel-text="取消"></datetime>
 			</group>
 			<group title="内容信息">
-					<popup-picker title="工作类型" :columns="1" :data="typeOptions" :value.sync="wType"  show-name ></popup-picker>
-					<cell title="选择项目" v-show="showPro" is-link  @click="showPop">
-						<span slot="value">{{project.text | substr 10 }}</span>
-					</cell>
-					<x-input  :min="3" :max="20" :value.sync="subTitle" is-type="china_name" placeholder="日志标题:长度3~20" ></x-input>
-					<x-textarea :max="200" :row="6"  :value.sync="remark"  placeholder="请填写日志内容"></x-textarea>
-					<box gap="10px 10px">
-							<x-button @click="saveLog" type="primary">
+				<popup-picker title="工作类型" :columns="1" :data="typeOptions" :value.sync="wType"  show-name ></popup-picker>
+				<cell title="选择项目" v-show="showPro" is-link  @click="showPop">
+					<span slot="value">{{project.text | substr 10 }}</span>
+				</cell>
+				<x-input  :min="3" :max="20" :value.sync="subTitle" is-type="china_name" placeholder="日志标题:长度3~20" ></x-input>
+				<x-textarea :max="200" :row="6"  :value.sync="remark"  placeholder="请填写日志内容"></x-textarea>
+				<box gap="10px 10px">
+					<x-button @click="saveLog" type="primary">
 							提交
 					</x-button>
 				</box>
@@ -53,10 +53,10 @@
 				curDay:'',
 				type:'',
 				typeOptions:[
-											 {value:'XMGZLB',name:"项目工作"},
-							  			 {value:'RCGZLB',name:"日常工作"},
-							  			 {value:'SHGZLB',name:"售后工作"}
-						  			],
+								{value:'XMGZLB',name:"项目工作"},
+								{value:'RCGZLB',name:"日常工作"},
+								{value:'SHGZLB',name:"售后工作"}
+						  	],
 				mainData:[],
 				partData:[],
 				wType:['XMGZLB'],

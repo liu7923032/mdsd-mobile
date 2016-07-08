@@ -5,6 +5,8 @@ import Index from './views/Index.vue'
 import LogInfo from './views/worklog/LogInfo.vue'
 import LogDetail from './views/worklog/LogDetail.vue'
 import ProjectInfo from './views/project/ProjectInfo.vue'
+import CService from './views/CService.vue'
+import NewCSWork from './views/cservice/NewCSWork.vue'
 export default function(router) {
     router.map({
         '/': { //首页
@@ -28,6 +30,18 @@ export default function(router) {
             name: 'proinfo',
             auth: true,
             component: ProjectInfo
+        },
+        //客服
+        '/cservice':{
+            name: 'cservice',
+            auth: true,
+            component: CService
+        },
+         //客服
+        '/cservice/newcswork':{
+            name: 'newcswork',
+            auth: true,
+            component: NewCSWork
         },
         // 工作日志
         '/worklog': {
