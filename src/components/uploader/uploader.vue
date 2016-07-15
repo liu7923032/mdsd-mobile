@@ -63,3 +63,32 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .weui_uploader_bd {
+    margin-bottom: -4px;
+    margin-right: -9px;
+    overflow: hidden;
+}
+
+  .weui_uploader_input_wrp {
+    float: left;
+    position: relative;
+    margin-right: 9px;
+    margin-bottom: 9px;
+    width: 77px;
+    height: 77px;
+    border: 1px solid #d9d9d9;
+}
+
+  .weui_uploader_input {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+  }
+  </style>

@@ -9,6 +9,10 @@
         </toast>
         <loading :show="loading.show" :text="loading.text">
         </loading>
+
+        <dialog :show.sync="showDialog">
+            <p>{{dialog.text}}</p>
+        </dialog>
     </div>
 </template>
 
@@ -18,12 +22,15 @@
     import { Toast,Loading } from 'vux'
 
     import auth from './views/utils/auth.js'
+    import common from './views/utils/common.js'
     export default {
       data () {
         return {
            ticket:'',
            loading:{ show:false,text:'加载中'},
-           toast:{ show:false,type:'cancel',text:'网络连接失败'}
+           toast:{ show:false,type:'cancel',text:'网络连接失败'},
+           dialog:{show:false,text:""},
+           showDialog:false
         }
       },
       components:{
@@ -31,6 +38,15 @@
         Loading
       },
       created () {
+        console.log(common);
+        //检查请求地址是否包含tickt,如果包含那么就代表用户是通过微信登陆
+        var ticketUrl=common.getUrlParam("ticket");
+        var account=common.getUrlParam("account");
+        console.log("微信登陆的工号:"+account);
+        if(ticketUrl.length>10){
+            //设置用户登录信息
+            auth.setUser(account,ticketUrl,true);
+        }
         //检查是否登陆
         if(auth.isLogin()){
           this.ticket=auth.getTicket();
@@ -46,9 +62,9 @@
       }
     }
 </script>
-
-<style type="text/css">
+<style  type="text/css">
     @import '~vux/dist/vux.css';
+    /*@import '~vux/dist/styles/reset.css';*/
     /*当你设置一个元素为 box-sizing: border-box; 时，此元素的内边距和边框不再会增加它的宽度*/
     
     * {
@@ -149,6 +165,12 @@
         overflow: auto;
         padding-bottom: 50px;
     }
+    /*a{
+       text-decoration:none;
+    }
+    p{
+        margin:0px;
+    }*/
     /*内容的布局*/
     /*.page-bd {
     overflow: auto;
@@ -159,6 +181,4 @@
 }
 */
     /*改变weui的背景色*/
-    
-   
 </style>

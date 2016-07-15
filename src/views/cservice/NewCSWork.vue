@@ -11,14 +11,14 @@
                 <cell is-link  title="产品名称" @click="loadProducts" :value.sync="strProduct"></cell>
                 <cell is-link  title="联系人" @click="loadUsers" :value.sync="contactUser"></cell>
                 <popup-picker title="故障类别" :data="categorys" :value.sync="category" ></popup-picker>
-                <popup-picker title="处理方式" :data="methods" :value.sync="execMethod" ></popup-picker>
+                <selector title="处理方式" :options="methods" :value.sync="execMethod"  ></selector>
             </group>
             <group title="问题描述">
-                <x-textarea :max="200" placeholder="详细问题描述'"  :height="100" >
+                <x-textarea :max="200" placeholder="详细问题描述'" :value.sync="desc"  :height="100" >
                 </x-textarea>
             </group>
             <group title="解决方案">
-                <x-textarea :max="200" placeholder="详细解决方案"  :height="100" >
+                <x-textarea :max="500" placeholder="详细解决方案" :value.sync="solution"  :height="150" >
                 </x-textarea>
             </group>
              <cell >
@@ -28,14 +28,20 @@
                     </uploader-files>
                 </uploader>
             </cell>
-            <box gap="10px 10px">
+            <box gap="10px 10px" v-show="!showFlow">
+                <x-button @click="addData" type="primary">新增</x-button>
+            </box>
+            <box gap="10px 10px" v-show="showFlow">
                 <x-button @click="saveData" type="primary">保存</x-button>
+            </box>
+             <box gap="10px 10px" v-show="showFlow">
+                <x-button @click="sendFlow" type="primary">发起流程</x-button>
             </box>
         </div>
 
         <!--选择医院的popup-->
-        <popup :show.sync="showHosp" height="100%">
-            <div class="popup">
+        <popup :show.sync="showHosp" height="80%">
+            <div class="popup" >
                  <tab>
                      <tab-item :selected="hospIndex==0" @click="hospIndex=0">
                          我的医院
@@ -51,12 +57,14 @@
                             </cell>
                         </group>
                      </div>
-                     <div v-show="hospIndex==1"></div>
+                     <div v-show="hospIndex==1">
+                         <search @result-click="resultClick" @on-submit="getResult" placeholder="输入关键字后回车" cancel-text="取消" :results="result" :value.sync="hospKey"></search>
+                     </div>
                  </div>
             </div>
         </popup>
         <!--产品-->
-        <popup :show.sync="showProduct" height="100%">
+        <popup :show.sync="showProduct" height="80%">
             <div class="popup">
                 <group>
                     <box gap="10px 10px">
@@ -68,8 +76,8 @@
         </popup>
 
         <!--医院联系人-->
-        <popup :show.sync="showUser" height="100%">
-            <div class="popup">
+        <popup :show.sync="showUser" height="80%">
+            <div class="popup" >
                 <group title="医院联系人">
                     <radio :options="Users" @on-change="selectUser"></radio>
                 </group>
@@ -81,12 +89,15 @@
 </template>
 
 <script lang="babel">
-import	{ XHeader,Group,Cell,Tab, TabItem ,Scroller,PopupPicker,Datetime,XInput,XTextarea,Box,XButton,Popup,Checklist,Radio} from 'vux'
+import	{ XHeader,Group,Cell,Tab, TabItem ,Scroller,PopupPicker,
+    Datetime,XInput,XTextarea,Box,XButton,Popup,Checklist,Radio,Selector,Search} from 'vux'
 import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
+import common from '../utils/common.js'
     export default {
         name:'newcswork',
         data () {
             return {
+                dispNo:"",
                 ReceiveTime:"",
                 CompleteTime:"",
                 Hospital:[],
@@ -96,6 +107,8 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                 hospIndex:0,
                 HospId:0,
                 hospName:'',
+                hospKey:'',
+                result:[],
                 // 产品
                 showProduct:false,
                 Product:[],
@@ -105,14 +118,12 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                 showUser:false,
                 Users:[],
                 contactUser:"",
-                // 医院联系方式
-                contactTel:"",
                 // 故障类别
                 categorys:[["故障报修","系统巡检"]],
                 category:[],
                 // 处理方式
-                methods:[["现场处理","远程处理"]],
-                execMethod:[],
+                methods:[{value:'现场处理',key:'CLFS0002'},{value:'远程处理',key:'CLFS0001'}],
+                execMethod:"",
                 // 附件上传
                 fileCount:0,
                 showfile:false,
@@ -120,7 +131,12 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                 // 问题描述
                 desc:'',
                 // 解决方案
-                solution:''
+                solution:'',
+                // 附件
+                attachFile:'',
+                // 发起流程
+                showFlow:false,
+                temp:""
             }
         },
         ready () {
@@ -129,7 +145,7 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
         methods : {
             selectHosp (hospId,hospName) {
                 this.HospId=hospId;
-                console.log(hospId);
+                
                 this.hospName=hospName;
                 this.showHosp=false;
             },
@@ -142,6 +158,7 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                 }).join(',')
             },
             selectUser (value) {
+                console.log(value);
                 this.contactUser=value;
                 this.showUser=false;
             },
@@ -154,7 +171,7 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
 				if(!file){
 					return false;
 				}
-				_this.docFile=file;
+				_this.attachFile=file;
 				//读取上传的文件信息
 				var reader = new FileReader();
 				reader.onload = (evt)=>{
@@ -183,6 +200,28 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                     })
                 }
             },
+            resultClick (item) {
+              
+                this.HospId=item.hospId;
+                this.hospName=item.title;
+                this.showHosp=false;
+            },
+            getResult (value) {
+                //从hosp中查询数据
+                this.$http.get("Hospital/GetHospByKey/"+value).then((success)=>{
+                    var resData=success.data;
+                    //加载
+                    var tempData=resData.map((item)=>{
+                        return {
+                            title:item.HospName,
+                            hospId:item.HospId
+                        }
+                    });
+                    this.result=tempData;
+                })
+                
+                
+            },
             // 加载产品信息
             loadProducts () {
                 this.showProduct=true
@@ -198,7 +237,8 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
             },
             // 加载联系人
             loadUsers () {
-                   var hospId=this.HospId;
+                var hospId=this.HospId;
+                this.showUser=true;
                 if(hospId==0){
                     //弹出错误提示
                     this.$root.toast = { show: true, type: 'cancel', text: '请先选择医院信息' };
@@ -213,11 +253,11 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                     });
                 }
             },
-            // 保存信息
-            saveData () {
-                var postData={
+            // 获取formData;
+            getFormData () {
+                var formData=new  FormData();
+                var postData = {
                     "Category":this.category[0],
-                    "ContactTel":this.contactTel,
                     "ContactUser":this.contactUser,
                     "HospId":this.HospId,
                     "ProblemDesc":this.desc,
@@ -225,12 +265,106 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
                     "ProductIds":this.strProduct,
                     "ReceiveTime":this.ReceiveTime,
                     "CompleteTime":this.CompleteTime,
-                    "ExecMethod":this.execMethod[0]
+                    "ExecMethod":this.execMethod
                 };
-                this.$http.post("CService/SaveRecord",postData).then((response)=>{
-                    var data=response.data;
-
+                var formData=new FormData();
+                for (var key of Object.keys(postData)) {
+                    formData.append(key,postData[key]);
+                    console.log(key + ": " + postData[key]);
+                }
+                if(this.attachFile){
+                      formData.append("upfile",this.attachFile);
+                }
+                return formData;
+            },
+            // 编辑信息保存
+            saveData () {
+                var formData=this.getFormData();
+                var that=this;
+                this.$http.post("CService/SaveRecord/"+this.dispNo,formData).then((response)=>{
+                    that.$root.toast={show:false,type:'ok',text:'保存成功'};
+                   
+                   
                 },(error)=>{
+
+                })
+            },
+            // 新增记录
+            addData () {
+                var formData=this.getFormData();
+                var that=this;
+                this.$http.post("CService/AddRecord",formData).then((response)=>{
+                    that.$root.toast={show:false,type:'ok',text:'新增成功'};
+                    //调整到指定页面
+                    that.$router.go({path:'/cservice'});
+                    // common.procResult(response,(resData)=>{
+                    // });
+                },(error)=>{
+
+                })
+            },
+            // 发起流程
+            sendFlow () {
+                var formData={aa:'11',text:'11'};
+				var postData={
+					WFNo:'ccc019c9-0797-4288-bfa5-4f2e3ec0ff20',
+					SourcePK:'',
+					FlowNo:'',
+					FlowName:'流程标题',
+					FlowJson:JSON.stringify(formData),
+					FlowMemo:'备注嘻嘻你',
+					FlowStatus:'0',
+					SubUserId:'10685',
+					NextUser:'',
+					NextStepNo:'',
+					Comment:'我统一'
+				}
+				this.$http.post("WFlow/SaveForm",JSON.stringify(postData)).then((success)=>{
+
+				},(error)=>{
+
+				})
+            }
+        },
+        route:{
+            data (transition) {
+                var dispNo=transition.to.query.dispNo;
+                if(!dispNo||dispNo==''){
+                    return false;
+                }
+                this.dispNo=dispNo;
+                //显示流程信息
+                this.showFlow=true;
+                //加载基本信息
+                this.$http.get("CService/GetRecordByNo/"+this.dispNo).then((res)=>{
+                    var obj=res.data.Data[0] || undefined;
+                    if(!obj){
+                        return false;
+                    }
+                    console.log(obj);
+                    this.ReceiveTime=obj.ReceiveTime; 
+                    this.CompleteTime=obj.CompleteTime; 
+                    this.HospId=obj.HoptalId;
+                    this.hospName=obj.HospName;
+                    this.strProduct=obj.ProductIds;
+                    this.contactUser=obj.ContactUser; 
+                   
+                    var tempExec=[],tempCate=[];
+                    tempCate.push(obj.Category)
+                    this.category=tempCate;
+                    
+                    this.execMethod=obj.ExecMethod;
+                    this.solution=obj.Solution;
+                    this.desc=obj.ProblemDesc;
+                    if( obj.FileUrl.length>0 ) {
+                        console.log(obj.FileUrl);
+                        //替换 E:\PMIS_DOC
+                        var fileUrl=obj.FileUrl.replace('E:\/',"http://e.mdsd.cn:9000");
+                        this.imgPath=fileUrl;
+                        this.showfile=true;
+                        this.fileCount=1;
+                    }
+                },()=>{
 
                 })
             }
@@ -250,7 +384,9 @@ import 	{ Uploader, UploaderFiles, UploaderFile } from '../../components';
             Radio,
             PopupPicker,
             Uploader, UploaderFiles, UploaderFile,
-            XTextarea
+            XTextarea,
+            Selector,
+            Search
         },
     }
 </script>

@@ -29,3 +29,17 @@ export default {
   }
 }
 </script>
+
+
+
+<style scoped>
+  .weui_uploader_file {
+    float: left;
+    margin-right: 9px;
+    margin-bottom: 9px;
+    width: 79px;
+    height: 79px;
+    background: no-repeat center center;
+    background-size: cover;
+}
+  </style>

@@ -35,6 +35,7 @@ module.exports = merge(baseConfig, {
         warnings: false
       }
     }),
+    
     new webpack.optimize.OccurenceOrderPlugin(),
     // extract css into its own file
     new ExtractTextPlugin('[name].[contenthash].css'),

@@ -1,8 +1,8 @@
 <template>
     <div class="page cservice">
         <x-header :left-options="{showBack:true,backText:'返回'}">
-            <p>客服工作</p>
-            <a slot="right"  href="/cservice/newcswork">新增</a>
+            客服工作
+            <a slot="right" href="javascript:void(0)" v-link="{path:'/cservice/newcswork'}">新增</a>
         </x-header>
         <tab>
             <tab-item :selected="selectIndex === 0" @click="selectIndex = 0">
@@ -18,6 +18,9 @@
         <div class="weui-tab-bd">
             <div v-show="selectIndex == 0">
                 <group title="待处理">
+                    <cell v-for="item in waitData" is-link :title="item.HospName" v-link="{path:'/cservice/newcswork',query:{'dispNo':item.DispNo}}">
+
+                    </cell>
                 </group>
             </div>
             <div v-show="selectIndex == 1">
@@ -42,10 +45,20 @@
         //初始化数据
         data () {
             return {
-                selectIndex:0
+                selectIndex:0,
+                // 待处理的任务
+                waitData:[]
             }
         },
-        methods:{
+        route:{
+            data (transtion) {
+                //加载当前人员的数据
+                this.$http.get("CService/GetRecords/1").then((response)=>{
+                    this.waitData=response.data;
+                },(error)=>{
+
+                })
+            }
         },
         components:{
             XHeader,

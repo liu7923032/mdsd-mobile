@@ -1,9 +1,8 @@
 <template>
   <div class="page" transition="app">
-    <x-header :left-options="{showBack: false}">
-      <p>首页</p>
-    </x-header>
-    
+      <x-header :left-options="{showBack: false}">
+        首页
+      </x-header>
       <div class="weui-tab-bd">
         <div v-show="selectIndex==0">
             <scroller lock-x scrollbar-y use-pulldown  :pulldown-status.sync="pulldownStatus" @pulldown:loading="loadMsg">
@@ -25,9 +24,14 @@
           </scroller>
         </div>
         <div v-show="selectIndex==1" >
-            <grids>
-              <grid v-for="item in items" :router-link="{path: '/' + item.link}" :image-url="item.image" :label="item.text"></grid>
-            </grids>
+          <flexbox :gutter="0" wrap="wrap">
+            <flexbox-item :span="1/3" v-for="item in items" v-link="'/'+item.link" >
+              <div class="grid">
+                <img :src="item.image" alt="">
+                <div >{{item.text}}</div>
+              </div>
+            </flexbox-item>
+          </flexbox>
         </div>
         <div v-show="selectIndex==2">
             <Group title="个人基本信息">
@@ -83,15 +87,24 @@
 
 <script>
 
-import { Grids,Grid } from '../components/'
 
-import { Tabbar, TabbarItem,XHeader,Flexbox, FlexboxItem ,Scroller, Divider, Spinner ,Cell, Group} from 'vux'
+import { Tabbar, TabbarItem,XHeader,Flexbox, FlexboxItem ,Scroller, Divider, 
+  Spinner ,Cell, Group} from 'vux'
+
+// import Tabbar from 'vux/dist/components/Tabbar'
+// import TabbarItem from 'vux/dist/components/TabbarItem'
+// import XHeader from 'vux/dist/components/XHeader'
+// import Flexbox from 'vux/dist/components/Flexbox'
+// import FlexboxItem from 'vux/dist/components/FlexboxItem'
+// import Scroller from 'vux/dist/components/Scroller'
+// import Divider from 'vux/dist/components/Divider'
+// import Spinner from 'vux/dist/components/Spinner'
+// import Group from 'vux/dist/components/Group'
+
 
 export default {
   name: 'index',
   components: {
-    Grids,
-    Grid,
     Tabbar,
     TabbarItem,
     XHeader,
@@ -103,27 +116,27 @@ export default {
     return {
       items: [{
         link: 'project',
-        image:'./static/images/app/icon_nav_cell.png',
+        image:'../static/images/app/icon_nav_cell.png',
         text: '项目',
       }, {
         link: 'cservice',
-        image:'./static/images/app/icon_nav_article.png',
+        image:'../static/images/app/icon_nav_article.png',
         text: '客服'
       }, {
         link: 'worklog',
-        image:'./static/images/app/icon_nav_icons.png',
+        image:'../static/images/app/icon_nav_icons.png',
         text: '日志'
       }, {
         link: 'flow',
-        image:'./static/images/app/icon_nav_tab.png',
+        image:'../static/images/app/icon_nav_tab.png',
         text: '流程'
       }, {
         link: 'userinfo',
-        image:'./static/images/app/icon_nav_article.png',
+        image:'../static/images/app/icon_nav_article.png',
         text: '系统公告'
       }, {
         link: 'progress',
-        image:'./static/images/app/icon_nav_dialog.png',
+        image:'../static/images/app/icon_nav_dialog.png',
         text: '知识分享'
       }],
       selectIndex:0,
@@ -138,23 +151,13 @@ export default {
 
   route: {
     data (transition) {
+      console.log("第一次进来");
       this.getUserInfo();
     }
   },
 
-  created () {
-    // store.on('topstories-updated', this.update)
-  },
-
-  destroyed () {
-    // store.removeListener('topstories-updated', this.update)
-  },
-
   methods: {
     update () {
-      // store.fetchItemsByPage(this.page).then(items => {
-      //   this.items = items
-      // })
     },
     //加载我的消息列表
     loadMsg(uuid){
@@ -174,10 +177,8 @@ export default {
     getUserInfo(){
       this.$http.get("UserInfo").then((success)=>{
         this.user=success.data;
-              console.log(success.data);
       },(error)=>{
-
-      })
+      });
     }
   },
   filters: {
@@ -196,6 +197,17 @@ export default {
     font-size: 12px;
   }
 
+
+  .grid{
+    text-align:center;
+    padding:15px;
+    border-right:1px solid lightgray;
+    border-bottom:1px solid lightgray;
+  }
+  .grid img{
+    width:40px;
+    height:40px;
+  }
 
   .rotate {
       transform: rotate(-180deg);

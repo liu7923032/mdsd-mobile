@@ -7,6 +7,7 @@ import LogDetail from './views/worklog/LogDetail.vue'
 import ProjectInfo from './views/project/ProjectInfo.vue'
 import CService from './views/CService.vue'
 import NewCSWork from './views/cservice/NewCSWork.vue'
+
 export default function(router) {
     router.map({
         '/': { //首页

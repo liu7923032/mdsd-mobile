@@ -87,14 +87,14 @@
 					</cell>
 					<x-textarea :max="200" :row="6" :value.sync="memo" placeholder="文档备注信息"></x-textarea>
 					<box gap="10px 10px">
-						<x-button @click="saveProDoc" type="primary">
+						<x-button @click="saveProDoc"  v-show="false" type="primary">
 							提交
 						</x-button>
 
-						<x-button @click="saveFlow" type="primary">
+						<x-button @click="saveFlow" v-show="false" type="primary">
 							保存表单
 						</x-button>
-						<x-button @click="sendFlow" type="primary">
+						<x-button @click="sendFlow"  v-show="false" type="primary">
 							发起流程
 						</x-button>
 					</box>
